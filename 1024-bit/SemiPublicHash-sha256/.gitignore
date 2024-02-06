@@ -1,0 +1,27 @@
+# Node/Editors
+node_modules
+package-lock.json
+yarn.lock
+.vscode
+
+# Private config files
+networks.config.js
+
+# Hardhat files
+cache
+circuit_artifacts
+artifacts
+docs
+MyLogFile.log
+
+build/*
+!/build/README.md
+!/build/build.sh
+!/build/poweroftau_gen.sh
+
+# buid files
+circuits/castVote_main.circom
+test/2_eVote.test.js
+
+# Temporary Files
+ephemeral
