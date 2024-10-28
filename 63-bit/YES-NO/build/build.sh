@@ -44,7 +44,7 @@ function circuitCompileGenKey(){
    Nconstraints=`$snarkjs r1cs info "$citcuitName".r1cs|grep "Constraints"|cut -d ":" -f 3`
    compileTime=$(((compile_end - compile_start)/1000000))
    keyGenTime=$(((keyGen_end - keyGen_start)/1000000))
-   provingKeySize=`stat -c%s "$citcuitName"Final.zkey`
+   provingKeySize=`stat -f%z "$citcuitName"Final.zkey`
    
    #delete temp keys
    rm "$citcuitName"000.zkey
@@ -111,9 +111,9 @@ depth=$(python3 -c "import math; print(math.ceil(math.log2($nVoters)))")
 cp ../circuits/castVote_main_src.circom ../circuits/castVote_main.circom
 cp ../test/2_eVote.test.src.js ../test/2_eVote.test.js
 
-sed -i "s/__DEPTH__/$depth/g" ../circuits/castVote_main.circom
-sed -i "s/__DEPTH__/$depth/g" ../test/2_eVote.test.js
-sed -i "s/__NVOTERS__/$nVoters/g" ../test/2_eVote.test.js
+sed -i.bak "s/__DEPTH__/$depth/g" ../circuits/castVote_main.circom
+sed -i.bak "s/__DEPTH__/$depth/g" ../test/2_eVote.test.js
+sed -i.bak "s/__NVOTERS__/$nVoters/g" ../test/2_eVote.test.js
 
 snarkjs=../node_modules/.bin/snarkjs
 
@@ -149,10 +149,10 @@ castVoteStatistics=$(circuitCompileGenKey "castVote_main" "verifier_castVote_mai
 printStatistics "castVote_main" "$castVoteStatistics"
 
 statistics=($castVoteStatistics)
-sed -i "s/__constraints__/${statistics[0]}/g" ../test/2_eVote.test.js
-sed -i "s/__compilation__/${statistics[1]}/g" ../test/2_eVote.test.js
-sed -i "s/__generation__/${statistics[2]}/g" ../test/2_eVote.test.js
-sed -i "s/__proving__/${statistics[3]}/g" ../test/2_eVote.test.js
+sed -i.bak "s/__constraints__/${statistics[0]}/g" ../test/2_eVote.test.js
+sed -i.bak "s/__compilation__/${statistics[1]}/g" ../test/2_eVote.test.js
+sed -i.bak "s/__generation__/${statistics[2]}/g" ../test/2_eVote.test.js
+sed -i.bak "s/__proving__/${statistics[3]}/g" ../test/2_eVote.test.js
 
 
 # # print how to run test
