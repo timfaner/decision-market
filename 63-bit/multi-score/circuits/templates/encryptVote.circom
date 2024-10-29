@@ -66,3 +66,53 @@ template EncryptVote2(n, nCandiadates, k){
     v_cal.p <== N_square;
     v <== v_cal.out;
 }
+
+
+
+// N is n-bit
+// g is n-bit, g < N
+// h is n-bit, h = g^(2^T) < N
+// r is 2n-bit, r < N^2
+//d is nCandiadates * k bit-integer < N
+template EncryptVoteMTHLP(n, nCandiadates, k){
+    assert(n <= 63);
+    signal input N;
+    signal input g;
+    signal input h;
+    
+    signal input r;
+    signal input d;
+    
+    signal output u;
+    signal output v;
+    
+
+    // assert d in {0,1}
+    // (d)*(d-1) === 0;
+
+
+    // cal u = g^r mod N
+    component g_pow_r_cal = powMod(n, 2 * n);
+    g_pow_r_cal.base <== g;
+    g_pow_r_cal.exp <== r; //implicitly check that r is 2n-bit
+    g_pow_r_cal.modulus <== N;
+    u <== g_pow_r_cal.out;
+
+    // cal v = ((h^r)^N * (1+N)^d) mod N^2
+    // Lemma 2 ==> v = ((h^r mod N)^N * (1+N)^d) mod N^2
+
+    //0- cal h_pow_r
+    component h_pow_r_cal = powMod(n, 2 * n);
+    h_pow_r_cal.base <== h;
+    h_pow_r_cal.exp <== r; //implicitly check that r is 2n-bit
+    h_pow_r_cal.modulus <== N;
+
+
+
+    //1- cal v= h^r * d mod N 
+    component v_cal = MultModP(2 * n);
+    v_cal.a <== h_pow_r_cal.out;
+    v_cal.b <== d ;
+    v_cal.p <== N;
+    v <== v_cal.out;
+}
