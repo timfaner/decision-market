@@ -11,9 +11,9 @@ const t=40;
 
 const puzzle = new RandomPuzzle(n, t);
 
-const nCandidates = 2;
-const S = 1;
-const k = 4;
+const nCandidates = 4;
+const S = 10;
+const k = 15;
 
 
 

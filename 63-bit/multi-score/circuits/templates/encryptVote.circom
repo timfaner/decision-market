@@ -83,7 +83,6 @@ template EncryptVoteMTHLP(n, nCandiadates, k){
     signal input r;
     signal input d;
     
-    signal output u;
     signal output v;
     
 
@@ -91,12 +90,12 @@ template EncryptVoteMTHLP(n, nCandiadates, k){
     // (d)*(d-1) === 0;
 
 
-    // cal u = g^r mod N
-    component g_pow_r_cal = powMod(n, 2 * n);
-    g_pow_r_cal.base <== g;
-    g_pow_r_cal.exp <== r; //implicitly check that r is 2n-bit
-    g_pow_r_cal.modulus <== N;
-    u <== g_pow_r_cal.out;
+    // // cal u = g^r mod N
+    // component g_pow_r_cal = powMod(n, 2 * n);
+    // g_pow_r_cal.base <== g;
+    // g_pow_r_cal.exp <== r; //implicitly check that r is 2n-bit
+    // g_pow_r_cal.modulus <== N;
+    // u <== g_pow_r_cal.out;
 
     // cal v = ((h^r)^N * (1+N)^d) mod N^2
     // Lemma 2 ==> v = ((h^r mod N)^N * (1+N)^d) mod N^2
