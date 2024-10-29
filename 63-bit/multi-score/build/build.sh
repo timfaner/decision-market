@@ -140,7 +140,8 @@ if [[ $((k*nCandiadates)) -ge "63" ]]; then
 fi
 
 cp ../circuits/castVote_main_src.circom ../circuits/castVote_main.circom
-cp ../test/2_eVote.test.src.js ../test/2_eVote.test.js
+cp ../circuits/castVote_main_src.circom ../circuits/castVote_main.circom
+cp ../src/verifyCircuit_src.js ../src/verifyCircuit.js
 
 
 echo "depth: $depth"
@@ -149,15 +150,17 @@ echo "nCandiadates: $nCandiadates"
 echo "S: $S"
 echo "k: $k"
 
-sed -i.bak "s/__DEPTH__/$depth/g" ../circuits/castVote_main.circom
-sed -i.bak "s/__DEPTH__/$depth/g" ../test/2_eVote.test.js
+
 sed -i.bak "s/__NVOTERS__/$nVoters/g" ../test/2_eVote.test.js
 sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../circuits/castVote_main.circom
+sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../src/verifyCircuit.js
 sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../test/2_eVote.test.js
 sed -i.bak "s/__S__/$S/g" ../circuits/castVote_main.circom
 sed -i.bak "s/__S__/$S/g" ../test/2_eVote.test.js
+sed -i.bak "s/__S__/$S/g" ../src/verifyCircuit.js
 sed -i.bak "s/__k__/$k/g" ../circuits/castVote_main.circom
 sed -i.bak "s/__k__/$k/g" ../test/2_eVote.test.js
+sed -i.bak "s/__k__/$k/g" ../src/verifyCircuit.js
 
 snarkjs=../node_modules/.bin/snarkjs
 

@@ -25,3 +25,6 @@ test/2_eVote.test.js
 
 # Temporary Files
 ephemeral
+
+
+*.bak

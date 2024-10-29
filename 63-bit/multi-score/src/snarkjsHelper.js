@@ -25,15 +25,21 @@ async function snarkFullProve(witness, wasmPath, zkeyPath) {
     wasmPath,
     zkeyPath,
   );
-  const zkProof = {
-    a: [proof.pi_a[0], proof.pi_a[1]],
-    b: [
-      [proof.pi_b[0][1], proof.pi_b[0][0]],
-      [proof.pi_b[1][1], proof.pi_b[1][0]],
-    ],
-    c: [proof.pi_c[0], proof.pi_c[1]],
-  };
+  const zkProof = proof;
+  // const zkProof = {
+  //   a: [proof.pi_a[0], proof.pi_a[1]],
+  //   b: [
+  //     [proof.pi_b[0][1], proof.pi_b[0][0]],
+  //     [proof.pi_b[1][1], proof.pi_b[1][0]],
+  //   ],
+  //   c: [proof.pi_c[0], proof.pi_c[1]],
+  // };
   return { zkProof, publicSignals };
+}
+
+async function snarkVerify(proof, verificationKeys, publicSignals) {
+  const result = await groth16.verify(verificationKeys, publicSignals, proof);
+  return result;
 }
 
 function formatVKey(vkey) {
@@ -63,7 +69,7 @@ function formatVKey(vkey) {
 }
 
 function getVerificationKeys(vkJSONfile) {
-  return formatVKey(JSON.parse(fs.readFileSync(vkJSONfile)));
+  return JSON.parse(fs.readFileSync(vkJSONfile));
 }
 
 module.exports = {
@@ -72,5 +78,6 @@ module.exports = {
   zkeyCastVotePath,
   vJsonCastVotePath,
   snarkFullProve,
+  snarkVerify,
   getVerificationKeys,
 };
