@@ -93,8 +93,15 @@ class Voter {
       x: this.x,
     };
     const startTime = process.hrtime();
+    
+    function stringify(obj) {
+      return JSON.stringify(obj, (key, value) => 
+        typeof value === 'bigint' ? value.toString() : value
+      );
+    }
+    console.log(stringify(circuitInputs));
 
-    const { zkProof, publicSignals } = await snarkFullProve(
+    const { zkProof, publicSignals,formatProof } = await snarkFullProve(
       circuitInputs,
       wasmCastVotePath,
       zkeyCastVotePath,
@@ -105,6 +112,7 @@ class Voter {
 
     this.zkProof = zkProof;
     this.publicSignals = publicSignals;
+    this.formatProof = formatProof;
   }
 }
 

@@ -4,8 +4,9 @@ import {VerifyingKey} from "./utils/struct.sol";
 import {bigModExp} from "./utils/bigModExp.sol";
 
 import {verifierZKSNARK} from "./utils/verifier_zkSNARK.sol";
+import {Groth16Verifier} from "./utils/Groth16Verifyer.sol";
 
-contract Verifier is bigModExp, verifierZKSNARK {
+contract Verifier is bigModExp, Groth16Verifier {
     function vdfVerify(
         uint256 T,
         uint256 N,
@@ -67,13 +68,13 @@ contract Verifier is bigModExp, verifierZKSNARK {
     //     verifierZKSNARK.setVerifyingKey(_vKey, index);
     // }
 
-    function zkVerify(
-        uint[2] memory a,
-        uint[2][2] memory b,
-        uint[2] memory c,
-        uint[] memory input,
-        VerifyingKey memory vk
-    ) public view returns (bool) {
-        return verifierZKSNARK.verifyProof(a, b, c, input, vk);
-    }
+    // function zkVerify(
+    //     uint[2] memory a,
+    //     uint[2][2] memory b,
+    //     uint[2] memory c,
+    //     uint[] memory input,
+    //     VerifyingKey memory vk
+    // ) public view returns (bool) {
+    //     return verifierZKSNARK.verifyProof(a, b, c, input, vk);
+    // }
 }

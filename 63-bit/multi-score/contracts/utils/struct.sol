@@ -25,15 +25,16 @@ struct Proof {
 }
 
 struct SnarkProof {
-    uint256[2] a;
-    uint256[2][2] b;
-    uint256[2] c;
+    uint[2] a;
+    uint[2][2] b;
+    uint[2] c;
 }
 
 struct castVoteData {
-    uint256 u;
-    uint256 v;
-    uint256 nullifierHash;
+    uint u;
+    uint v_d1;
+    uint v_d2;
+    uint v_x;
 }
 
 struct tallyData {

@@ -140,7 +140,7 @@ if [[ $((k*nCandiadates)) -ge "63" ]]; then
 fi
 
 cp ../circuits/castVote_main_src.circom ../circuits/castVote_main.circom
-cp ../circuits/castVote_main_src.circom ../circuits/castVote_main.circom
+cp ../test/2_eVote.test.src.js ../test/2_eVote.test.js
 cp ../src/verifyCircuit_src.js ../src/verifyCircuit.js
 
 
@@ -194,6 +194,8 @@ castVoteStatistics=$(circuitCompileGenKey "castVote_main" "verifier_castVote_mai
 
 #print statistics
 printStatistics "castVote_main" "$castVoteStatistics"
+
+$snarkjs zkey export solidityverifier "$citcuitName"Final.zkey ../contracts/utils/Groth16Verifyer.sol
 
 statistics=($castVoteStatistics)
 sed -i.bak "s/__constraints__/${statistics[0]}/g" ../test/2_eVote.test.js

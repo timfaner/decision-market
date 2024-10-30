@@ -8,7 +8,7 @@
     "lint": "solhint 'contracts/**/*.sol' && eslint src/*.js && eslint test/*.js",
     "prettier": "prettier --write 'test/*.js' && prettier --write 'src/*.js' && prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
     "clean": "hardhat clean",
-    "test": "npx hardhat test ./test/2_eVote.test.js"
+    "test": "npx hardhat test ./test/2_eVote.test.js --network hardhat"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.1",

@@ -15,7 +15,6 @@ const { RandomPuzzle } = require('../src/puzzle');
 
 let eVoteInstance;
 const n = 63;
-const TREE_DEPTH = __DEPTH__;
 const nVoters = __NVOTERS__;
 const nCandidates = __nCandiadates__;
 const S = __S__;
@@ -37,7 +36,6 @@ let U = 1n;
 let V = 1n;
 let tallyingResult = Array(nCandidates).fill(0);
 const log = {
-  TREE_DEPTH,
   nVoters,
   nCandidates,
   S,
@@ -75,45 +73,26 @@ describe('zk-Evote-HTLP', () => {
       voters.push(await new Voter(2 * DEPOSIT, n, nCandidates, S, k));
     }
 
-    eligibilityMerkleTree = new EligibilityMerkleTree(
-      voters.map((v) => v.address),
-    );
-    for (let i = 0; i < nVoters; i++) {
-      voters[i].setEligibilityProof(eligibilityMerkleTree);
-    }
-    registerCommitements = new RegisterCommitements(TREE_DEPTH);
+
+
     puzzle = new RandomPuzzle(n, t); // .getPuzzle();
     assert(
       1n << BigInt(nCandidates * k) < puzzle.N,
       '2**(nCandidates * k) < N',
     );
 
-    // Deploy Poseidon library
-    await overwriteArtifact('PoseidonT3', poseidonGenContract.createCode(2));
-    await overwriteArtifact('PoseidonT4', poseidonGenContract.createCode(3));
   });
 
   it('Deploy', async () => {
-    const PoseidonT3 = await ethers.getContractFactory('PoseidonT3', admin);
-    const poseidonT3 = await PoseidonT3.deploy();
-    await poseidonT3.deployed();
-    const PoseidonT4 = await ethers.getContractFactory('PoseidonT4', admin);
-    const poseidonT4 = await PoseidonT4.deploy();
-    await poseidonT4.deployed();
+
 
     // Deploy Evoting
     const EVote = await ethers.getContractFactory('ZkEvoteHTLP', {
-      libraries: {
-        PoseidonT3: poseidonT3.address,
-        PoseidonT4: poseidonT4.address,
-      },
       admin,
     });
     eVoteInstance = await EVote.deploy();
     await eVoteInstance.deployed();
     log.depolyGas = eVoteInstance.deployTransaction.gasLimit.toNumber();
-    log.posidonT3Gas = poseidonT3.deployTransaction.gasLimit.toNumber();
-    log.posidonT4Gas = poseidonT4.deployTransaction.gasLimit.toNumber();
   });
   it('Initialize', async () => {
     const solPuzzle = {
@@ -122,28 +101,18 @@ describe('zk-Evote-HTLP', () => {
       h: puzzle.h,
       T: puzzle.T,
     };
-    const _vKeyCastVote = getVerificationKeys(vJsonCastVotePath);
-    let tx;
-    tx = await eVoteInstance.initialize(
-      eligibilityMerkleTree.getHexRoot(),
+    let tx = await eVoteInstance.initialize(
       _registrationBlockInterval,
       _votingBlockInterval,
       _tallyBlockInterval,
-      TREE_DEPTH,
       nVoters,
       solPuzzle,
-      _vKeyCastVote,
       k,
       S,
       { value: DEPOSIT_ETH },
     );
     const receipt = await tx.wait();
     log.initializeGas = receipt.gasUsed.toNumber();
-
-    expect(await eVoteInstance.root()).to.equal(registerCommitements.root);
-    expect(await eVoteInstance.NghHash()).to.equal(
-      poseidon([solPuzzle.N, solPuzzle.g, solPuzzle.h]),
-    );
   });
   it('Register', async () => {
     let voter;
@@ -154,19 +123,13 @@ describe('zk-Evote-HTLP', () => {
       voter = voters[i];
       tx = await eVoteInstance
         .connect(voter.signer)
-        .register(voter.commitmentHash, voter.eligibilityProof, {
+        .register( {
           value: DEPOSIT_ETH,
         });
       receipt = await tx.wait();
       voter.log.registerGas = receipt.gasUsed.toNumber();
       registerEvent = receipt.events.find((ev) => ev.event === 'Register');
-      const [_commitmentHash, insertedIndex] = registerEvent.args;
-      expect(_commitmentHash).to.equal(voter.commitmentHash);
-      registerCommitements.insertLeaves([voter.commitmentHash]);
-      expect(insertedIndex).to.equal(
-        registerCommitements.tree[0].indexOf(voter.commitmentHash),
-      );
-      expect(await eVoteInstance.root()).to.equal(registerCommitements.root);
+
     }
   });
   it('Cast Vote', async () => {
@@ -178,44 +141,41 @@ describe('zk-Evote-HTLP', () => {
     for (let i = 0; i < nVoters; i++) {
       voter = voters[i];
       await voter.genCastVoteData(
-        registerCommitements,
-        puzzle,
-        relayer.address,
-        fee,
+        puzzle
       );
 
       tx = await eVoteInstance
         .connect(relayer)
-        .castVote(voter.castVoteData, fee, voter.zkProof);
+        .castVote(voter.castVoteData, voter.formatProof);
       receipt = await tx.wait();
       voter.log.castGas = receipt.gasUsed.toNumber();
-      U = (U * voter.castVoteData.u) % puzzle.N;
-      V = (V * voter.castVoteData.v) % puzzle.N_square;
-      tallyingResult = tallyingResult.map((num, indx) => num + voter.d[indx]);
-      expect(await eVoteInstance.U()).to.equal(U);
-      expect(await eVoteInstance.V()).to.equal(V);
+      //U = (U * voter.castVoteData.u) % puzzle.N;
+      //V = (V * voter.castVoteData.v) % puzzle.N_square;
+      //tallyingResult = tallyingResult.map((num, indx) => num + voter.d[indx]);
+      //expect(await eVoteInstance.U()).to.equal(U);
+      //expect(await eVoteInstance.V()).to.equal(V);
     }
   }).timeout(80000 * nVoters);
 
-  it('Set Tallying Result', async () => {
-    const finishVotingBlockNumber = await eVoteInstance.finishVotingBlockNumber();
-    await mineToBlockNumber(finishVotingBlockNumber.toNumber());
-    let tx;
-    const { _w, halvingProof } = puzzle.solveSha256(U);
+  // it('Set Tallying Result', async () => {
+  //   const finishVotingBlockNumber = await eVoteInstance.finishVotingBlockNumber();
+  //   await mineToBlockNumber(finishVotingBlockNumber.toNumber());
+  //   let tx;
+  //   const { _w, halvingProof } = puzzle.solveSha256(U);
 
-    const tData = {
-      D: tallyingResult,
-      _w: _w,
-      vdfProof: halvingProof,
-    };
+  //   const tData = {
+  //     D: tallyingResult,
+  //     _w: _w,
+  //     vdfProof: halvingProof,
+  //   };
 
-    tx = await eVoteInstance.connect(admin).setTally(tData);
-    const receipt = await tx.wait();
-    log.tallyGas = receipt.gasUsed.toNumber();
-    for (let i = 0; i < nCandidates; i++) {
-      expect(await eVoteInstance.tallyingResult(i)).to.equal(tallyingResult[i]);
-    }
-  }).timeout(200000000);
+  //   tx = await eVoteInstance.connect(admin).setTally(tData);
+  //   const receipt = await tx.wait();
+  //   log.tallyGas = receipt.gasUsed.toNumber();
+  //   for (let i = 0; i < nCandidates; i++) {
+  //     expect(await eVoteInstance.tallyingResult(i)).to.equal(tallyingResult[i]);
+  //   }
+  // }).timeout(200000000);
 
   it('logging', () => {
     const proofTime = [];

@@ -8,13 +8,22 @@ require('hardhat-docgen');
 
 /** @type import('hardhat/config').HardhatUserConfig */
 module.exports = {
+  defaultNetwork: "hardhat",
+
   solidity: {
     version: "0.8.0",
     settings: {
       optimizer: {
         enabled: true,
-        runs: 1000,
-      },
-    },
+        runs: 200
+      }
+    }
   },
-};
+  paths: {
+    sources: "./contracts",
+    tests: "./test",
+  },
+  mocha: {
+    timeout: 40000
+  }
+}
