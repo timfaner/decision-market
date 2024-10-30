@@ -76,12 +76,25 @@ describe('zk-Evote-HTLP', () => {
     [admin, relayer] = await ethers.getSigners();
     voters = [];
     for (let i = 0; i < nVoters; i++) {
-      voters.push(await new Voter(2 * DEPOSIT, n, nCandidates, S, k));
+
+      let voter = new Voter();
+      await voter.topup(2 * DEPOSIT);
+
+      // 读取voter_data目录下的所有文件
+      const files = fs.readdirSync('voter_data')
+        .filter(f => f !== 'puzzle.json'); // 排除puzzle.json
+      
+      // 随机选择一个文件
+      const randomFile = files[Math.floor(Math.random() * files.length)];
+      await voter.recover_from_file(`voter_data/${randomFile}`);
+      
+      voters.push(voter);
     }
 
 
 
-    puzzle = new RandomPuzzle(n, t); // .getPuzzle();
+    puzzle = new RandomPuzzle(n, t);
+    puzzle.recover_from_file(`voter_data/puzzle.json`);
     assert(
       1n << BigInt(nCandidates * k) < puzzle.N,
       '2**(nCandidates * k) < N',
@@ -146,9 +159,7 @@ describe('zk-Evote-HTLP', () => {
     let receipt;
     for (let i = 0; i < nVoters; i++) {
       voter = voters[i];
-      await voter.genCastVoteData(
-        puzzle
-      );
+
 
       tx = await eVoteInstance
         .connect(voter.signer)
@@ -182,13 +193,14 @@ describe('zk-Evote-HTLP', () => {
       tallyingResult_D = tallyingResult_D.map(  
         (num, indx) => num + voter.d[indx]
       );
-      tallyingResult_D_mul = tallyingResult_D_mul.map(
-        (num, indx) => num * voter.d[indx]
-      );
+
+      tallyingResult_D_mul = tallyingResult_D;
+      // tallyingResult_D_mul = tallyingResult_D_mul.map(
+      //   (num, indx) => num * voter.d[indx]
+      // );
       aggregate_d = aggregate_d + voter.aggregated_d;
       aggregate_x = aggregate_x + voter.aggregated_x;
     }
-    console.log("tallyingResult_D_mul: ", tallyingResult_D_mul);
 
 
     const { _w, halvingProof } = puzzle.solveSha256(U);
@@ -212,9 +224,6 @@ describe('zk-Evote-HTLP', () => {
   it('Verify Claim', async () => {
     for (let i = 0; i < nVoters; i++) {
       let voter = voters[i];
-      console.log("voter.aggregate_d: ", voter.aggregate_d);
-      console.log("voter.aggregate_x: ", voter.aggregate_x);
-      console.log("voter.r: ", voter.r);
       await eVoteInstance.connect(voter.signer).verifyClaim({
         aggregate_d: voter.aggregated_d,
         aggregate_x: voter.aggregated_x,

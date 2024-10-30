@@ -29,3 +29,5 @@ ephemeral
 
 
 *.bak
+
+voter_data/*

@@ -175,13 +175,11 @@ contract ZkEvoteHTLP is  Verifier {
     }
 
     function verifyClaim(rawVoteData calldata rData) public {
-        console.log("msg.sender: ", msg.sender);
         castVoteData memory vData = votedDatas[msg.sender];
 
         uint256 u = uint256(BigModExp(bytes32(puzzle.g), bytes32(rData.r), bytes32(puzzle.N)));
 
-        console.log("u: ", u);
-        console.log("vData.u: ", vData.u);
+
         require(vData.u == u, "Invalid u");
 
         uint256 tmp1 = uint256(BigModExp(bytes32(puzzle.h), bytes32(rData.r * puzzle.N), bytes32(N_square)));

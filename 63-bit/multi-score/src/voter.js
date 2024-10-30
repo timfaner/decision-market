@@ -5,6 +5,7 @@ const {
   pow,
   getRandomSigner,
 } = require('./utils');
+const fs = require('fs');
 const {
   zkeyCastVotePath,
   wasmCastVotePath,
@@ -12,10 +13,76 @@ const {
 } = require('./snarkjsHelper');
 
 class Voter {
-  constructor(balance, n, nCandidates, S, k) {
-    return (async () => {
-      this.signer = await getRandomSigner(balance);
-      this.address = this.signer.address;
+  constructor(){
+    this.signer = {};
+    this.address = '';
+  }
+  async topup(balance) {
+    this.signer = await getRandomSigner(balance);
+    this.address = this.signer.address;
+  }
+
+  recover_from_file(fileName) {
+    const data = JSON.parse(fs.readFileSync(fileName, 'utf8'));
+    data.signer = this.signer;
+    data.address = this.address;
+
+
+
+
+    // 从文件中恢复数据时需要将字符串转换为对应类型
+    data.r = BigInt(data.r);
+    data.aggregated_x = BigInt(data.aggregated_x);
+    data.aggregated_d = BigInt(data.aggregated_d);
+    
+    // castVoteData中的数据也需要转换为BigInt
+    if(data.castVoteData) {
+        data.castVoteData.u = BigInt(data.castVoteData.u);
+        data.castVoteData.v_d1 = BigInt(data.castVoteData.v_d1);
+        data.castVoteData.v_d2 = BigInt(data.castVoteData.v_d2); 
+        data.castVoteData.v_x = BigInt(data.castVoteData.v_x);
+    }
+
+    // zkProof中的数据需要转换为BigInt
+    if(data.zkProof) {
+        data.zkProof.pi_a = data.zkProof.pi_a.map(x => BigInt(x));
+        data.zkProof.pi_b = data.zkProof.pi_b.map(row => row.map(x => BigInt(x)));
+        data.zkProof.pi_c = data.zkProof.pi_c.map(x => BigInt(x));
+    }
+
+    // publicSignals需要转换为BigInt
+    if(data.publicSignals) {
+        data.publicSignals = data.publicSignals.map(x => BigInt(x));
+    }
+
+    // formatProof中的数据需要转换为BigInt
+    if(data.formatProof) {
+        data.formatProof.a = data.formatProof.a.map(x => BigInt(x));
+        data.formatProof.b = data.formatProof.b.map(row => row.map(x => BigInt(x)));
+        data.formatProof.c = data.formatProof.c.map(x => BigInt(x));
+    }
+
+    this.n = data.n;
+    this.nCandidates = data.nCandidates;
+    this.S = data.S;
+    this.k = data.k;
+    this.r = data.r;
+    this.x = data.x;
+    this.aggregated_x = data.aggregated_x;
+    this.d = data.d;
+    this.aggregated_d = data.aggregated_d;
+    this.log = data.log;
+    this.castVoteData = data.castVoteData;
+    this.zkProof = data.zkProof;
+    this.publicSignals = data.publicSignals;
+    this.formatProof = data.formatProof;
+
+  }
+  async init(n, nCandidates, S, k) {
+      this.n = n;
+      this.nCandidates = nCandidates;
+      this.S = S;
+      this.k = k;
 
       this.r = getRandomBigInt(2 * n);
 
@@ -57,16 +124,21 @@ class Voter {
       }
       this.log = { proofTime: 0, registerGas: 0, castGas: 0 };
       return this;
-    })();
+    
   }
 
   getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
 
-
+  stringify(obj) {
+    return JSON.stringify(obj, (key, value) => 
+      typeof value === 'bigint' ? value.toString() : value
+    );
+  }
 
   async genCastVoteData(puzzle) {
+    
     this.castVoteData = {
       u: pow(puzzle.g, this.r, puzzle.N),
       // ((1+N) ^ aggregated_d) == (1 + aggregated_d * N) mod N^2
@@ -93,13 +165,9 @@ class Voter {
       x: this.x,
     };
     const startTime = process.hrtime();
-    
-    function stringify(obj) {
-      return JSON.stringify(obj, (key, value) => 
-        typeof value === 'bigint' ? value.toString() : value
-      );
-    }
-    console.log(stringify(circuitInputs));
+
+
+
 
     const { zkProof, publicSignals,formatProof } = await snarkFullProve(
       circuitInputs,
@@ -113,6 +181,26 @@ class Voter {
     this.zkProof = zkProof;
     this.publicSignals = publicSignals;
     this.formatProof = formatProof;
+
+
+    // 生成10个随机字母
+    const randomStr = Array(10).fill()
+      .map(() => String.fromCharCode(65 + Math.floor(Math.random() * 26)))
+      .join('');
+    
+    // 创建文件名 
+    const fileName = `${this.nCandidates}_${this.S}_${randomStr}.json`;
+    
+    // 确保目录存在
+    if (!fs.existsSync('voter_data')) {
+      fs.mkdirSync('voter_data');
+    }
+    
+    // 写入文件
+    fs.writeFileSync(
+      `voter_data/${fileName}`, 
+      this.stringify(this)
+    );
   }
 }
 

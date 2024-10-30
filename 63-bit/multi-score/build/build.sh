@@ -141,7 +141,7 @@ fi
 
 cp ../circuits/castVote_main_src.circom ../circuits/castVote_main.circom
 cp ../test/2_eVote.test.src.js ../test/2_eVote.test.js
-cp ../src/verifyCircuit_src.js ../src/verifyCircuit.js
+cp ../src/genVoter_src.js ../src/genVoter.js
 
 
 echo "depth: $depth"
@@ -154,14 +154,14 @@ echo "k: $k"
 
 sed -i.bak "s/__NVOTERS__/$nVoters/g" ../test/2_eVote.test.js
 sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../circuits/castVote_main.circom
-sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../src/verifyCircuit.js
+sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../src/genVoter.js
 sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../test/2_eVote.test.js
 sed -i.bak "s/__S__/$S/g" ../circuits/castVote_main.circom
 sed -i.bak "s/__S__/$S/g" ../test/2_eVote.test.js
-sed -i.bak "s/__S__/$S/g" ../src/verifyCircuit.js
+sed -i.bak "s/__S__/$S/g" ../src/genVoter.js
 sed -i.bak "s/__k__/$k/g" ../circuits/castVote_main.circom
 sed -i.bak "s/__k__/$k/g" ../test/2_eVote.test.js
-sed -i.bak "s/__k__/$k/g" ../src/verifyCircuit.js
+sed -i.bak "s/__k__/$k/g" ../src/genVoter.js
 
 snarkjs=../node_modules/.bin/snarkjs
 
@@ -212,7 +212,7 @@ To test, run the following command:
    ${GREEN}npm run test
 ${NC}"""
 
-
+rm -rf ../voter_data
 
 # 将变量写入文件
 cat > variables.txt << EOL

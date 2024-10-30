@@ -6,10 +6,10 @@ const {
   pow,
   poseidon,
 } = require('./utils');
-
+const fs = require('fs');
 class RandomPuzzle {
   constructor(n, t) {
-    this.n = n;
+    this.n = n
     this.t = BigInt(t);
     this.T = 2n ** this.t;
     const pSize = Math.ceil(n / 2);
@@ -30,6 +30,26 @@ class RandomPuzzle {
     this.g = this.pickupRandomG(this.n, this.N);
     this.exp = pow(2n, this.T % this.phi_order_QR, this.order_QR);
     this.h = this.solve(this.g).puzzleSol;
+  }
+
+  recover_from_file(fileName) {
+    const data = JSON.parse(fs.readFileSync(fileName, 'utf8'));
+    
+    this.n = data.n;
+    this.t = BigInt(data.t);
+    this.T = BigInt(data.T);
+    this.p = BigInt(data.p);
+    this.q = BigInt(data.q);
+    this.N = BigInt(data.N);
+    this.phi = BigInt(data.phi);
+    this._p = BigInt(data._p);
+    this._q = BigInt(data._q);
+    this.order_QR = BigInt(data.order_QR);
+    this.phi_order_QR = BigInt(data.phi_order_QR);
+    this.N_square = BigInt(data.N_square);
+    this.g = BigInt(data.g);
+    this.exp = BigInt(data.exp);
+    this.h = BigInt(data.h);
   }
 
   pickupRandomG() {
@@ -71,6 +91,44 @@ class RandomPuzzle {
     };
   }
 
+  LHTLPGen(s) {
+    // 从1到N^2范围内随机选择r
+    const r = getRandomBigInt(this.n * 2);
+    
+    // 计算u = g^r mod N
+    const u = pow(this.g, r, this.N);
+
+    // 计算v = h^(r*N) * (1+N)^s mod N^2
+    const h_rN = pow(this.h, r * this.N, this.N_square);
+    const oneN_s = pow(1n + this.N, s, this.N_square); 
+    const v = (h_rN * oneN_s) % this.N_square;
+
+    return {
+      u: u,
+      v: v,
+      r: r // 返回r用于验证
+    };
+  }
+
+  MHTLPGen(s) {
+    // 从1到N^2范围内随机选择r
+    const r = getRandomBigInt(this.n * 2n);
+    
+    // 计算u = g^r mod N
+    const u = pow(this.g, r, this.N);
+
+    // 计算v = h^r * s mod N
+    const h_r = pow(this.h, r, this.N);
+    const v = (h_r * s) % this.N;
+
+    return {
+      u: u,
+      v: v,
+      r: r // 返回r用于验证
+    };
+  }
+
+  
   solveSha256(_x) {
     // const sol = pow(_x, this.exp, this.N);
     const _w = pow(
@@ -104,6 +162,22 @@ class RandomPuzzle {
       _w: [_w, _w_inv],
       halvingProof: proof,
     };
+  }
+
+  brutalSolve(_x) {
+    let w = _x;
+    for(let i = 0n; i < this.T; i++) {
+      w = w * w % this.N;
+    }
+    return w;
+  }
+
+  solvePuzzle(u, v) {
+    const w = this.brutalSolve(u);
+    const w_N = pow(w, this.N, this.N_square);
+    const v_div_w_N = (v * modInv(w_N, this.N_square)) % this.N_square;
+    const s = (v_div_w_N - 1n) / this.N;
+    return s;
   }
 
   getPuzzle() {
