@@ -17,6 +17,7 @@ MyLogFile.log
 build/*
 !/build/README.md
 !/build/build.sh
+!/build/updateTemplate.sh
 !/build/poweroftau_gen.sh
 
 # buid files

@@ -151,6 +151,7 @@ echo "S: $S"
 echo "k: $k"
 
 
+
 sed -i.bak "s/__NVOTERS__/$nVoters/g" ../test/2_eVote.test.js
 sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../circuits/castVote_main.circom
 sed -i.bak "s/__nCandiadates__/$nCandiadates/g" ../src/verifyCircuit.js
@@ -213,3 +214,12 @@ ${NC}"""
 
 
 
+# 将变量写入文件
+cat > variables.txt << EOL
+depth=$depth
+nVoters=$nVoters
+nCandiadates=$nCandiadates
+S=$S
+k=$k
+castVoteStatistics=$castVoteStatistics
+EOL
