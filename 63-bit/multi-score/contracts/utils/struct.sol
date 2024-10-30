@@ -37,8 +37,16 @@ struct castVoteData {
     uint v_x;
 }
 
+struct rawVoteData {
+    uint256 aggregate_d;
+    uint256 aggregate_x;
+    uint256 r;
+}
+
 struct tallyData {
     uint256[] D;
+    uint256[] X;
+    uint256[] D_mul;
     uint256[2] _w;
     uint256[2][] vdfProof;
 }

@@ -33,8 +33,14 @@ let registerCommitements;
 let eligibilityMerkleTree;
 let puzzle;
 let U = 1n;
-let V = 1n;
-let tallyingResult = Array(nCandidates).fill(0);
+let V_D1 = 1n;
+let V_D2 = 1n;
+let V_X = 1n;
+let tallyingResult_X = Array(nCandidates).fill(0);
+let tallyingResult_D = Array(nCandidates).fill(0);
+let tallyingResult_D_mul = Array(nCandidates).fill(1);
+let aggregate_d = 0n;
+let aggregate_x = 0n;
 const log = {
   nVoters,
   nCandidates,
@@ -145,37 +151,89 @@ describe('zk-Evote-HTLP', () => {
       );
 
       tx = await eVoteInstance
-        .connect(relayer)
+        .connect(voter.signer)
         .castVote(voter.castVoteData, voter.formatProof);
       receipt = await tx.wait();
       voter.log.castGas = receipt.gasUsed.toNumber();
-      //U = (U * voter.castVoteData.u) % puzzle.N;
-      //V = (V * voter.castVoteData.v) % puzzle.N_square;
-      //tallyingResult = tallyingResult.map((num, indx) => num + voter.d[indx]);
-      //expect(await eVoteInstance.U()).to.equal(U);
-      //expect(await eVoteInstance.V()).to.equal(V);
+      U = (U * voter.castVoteData.u) % puzzle.N;
+      V_D1 = (V_D1 * voter.castVoteData.v_d1) % puzzle.N_square;
+      V_X = (V_X * voter.castVoteData.v_x) % puzzle.N_square;
+      V_D2 = (V_D2 * voter.castVoteData.v_d2) % puzzle.N;
+
+
+
+      expect(await eVoteInstance.U()).to.equal(U);
+      expect(await eVoteInstance.V_D1()).to.equal(V_D1);
+      expect(await eVoteInstance.V_D2()).to.equal(V_D2);
+      expect(await eVoteInstance.V_X()).to.equal(V_X);
     }
   }).timeout(80000 * nVoters);
 
-  // it('Set Tallying Result', async () => {
-  //   const finishVotingBlockNumber = await eVoteInstance.finishVotingBlockNumber();
-  //   await mineToBlockNumber(finishVotingBlockNumber.toNumber());
-  //   let tx;
-  //   const { _w, halvingProof } = puzzle.solveSha256(U);
+  it('Set Tallying Result', async () => {
+    const finishVotingBlockNumber = await eVoteInstance.finishVotingBlockNumber();
+    await mineToBlockNumber(finishVotingBlockNumber.toNumber());
+    let tx;
+    for (let i=0; i<nVoters; i++) {
+      let voter = voters[i];      
+      tallyingResult_X = tallyingResult_X.map(
+        (num, indx) => num + voter.x[indx]
+      );
+      
+      tallyingResult_D = tallyingResult_D.map(  
+        (num, indx) => num + voter.d[indx]
+      );
+      tallyingResult_D_mul = tallyingResult_D_mul.map(
+        (num, indx) => num * voter.d[indx]
+      );
+      aggregate_d = aggregate_d + voter.aggregated_d;
+      aggregate_x = aggregate_x + voter.aggregated_x;
+    }
+    console.log("tallyingResult_D_mul: ", tallyingResult_D_mul);
 
-  //   const tData = {
-  //     D: tallyingResult,
-  //     _w: _w,
-  //     vdfProof: halvingProof,
-  //   };
 
-  //   tx = await eVoteInstance.connect(admin).setTally(tData);
-  //   const receipt = await tx.wait();
-  //   log.tallyGas = receipt.gasUsed.toNumber();
-  //   for (let i = 0; i < nCandidates; i++) {
-  //     expect(await eVoteInstance.tallyingResult(i)).to.equal(tallyingResult[i]);
-  //   }
-  // }).timeout(200000000);
+    const { _w, halvingProof } = puzzle.solveSha256(U);
+    const tData = {
+      D: tallyingResult_D,
+      X: tallyingResult_X,
+      D_mul: tallyingResult_D_mul,
+      _w: _w,
+      vdfProof: halvingProof,
+    };
+    tx = await eVoteInstance.connect(admin).setTally(tData);
+    const receipt = await tx.wait();
+    log.tallyGas = receipt.gasUsed.toNumber();
+    for (let i = 0; i < nCandidates; i++) {
+      expect(await eVoteInstance.tallyingResult_X(i)).to.equal(tallyingResult_X[i]);
+      expect(await eVoteInstance.tallyingResult_D(i)).to.equal(tallyingResult_D[i]);
+      //expect(await eVoteInstance.tallyingResult_D_mul(i)).to.equal(tallyingResult_D[i]);
+    }
+  }).timeout(200000000);
+
+  it('Verify Claim', async () => {
+    for (let i = 0; i < nVoters; i++) {
+      let voter = voters[i];
+      console.log("voter.aggregate_d: ", voter.aggregate_d);
+      console.log("voter.aggregate_x: ", voter.aggregate_x);
+      console.log("voter.r: ", voter.r);
+      await eVoteInstance.connect(voter.signer).verifyClaim({
+        aggregate_d: voter.aggregated_d,
+        aggregate_x: voter.aggregated_x,
+        r: voter.r,
+      });
+    }
+  });
+
+  it('Claim Reward', async () => {
+    for (let i = 0; i < nVoters; i++) {
+      let voter = voters[i];
+      await eVoteInstance.connect(voter.signer).claimReward();
+    }
+  });
+
+  it('Retrive Result', async () => {
+    const result = await eVoteInstance.retriveResult();
+    console.log("result: ", result);
+  });
 
   it('logging', () => {
     const proofTime = [];

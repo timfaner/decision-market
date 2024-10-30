@@ -13,7 +13,7 @@ const puzzle = new RandomPuzzle(n, t);
 
 const nCandidates = 4;
 const S = 10;
-const k = 15;
+const k = 5;
 
 
 
