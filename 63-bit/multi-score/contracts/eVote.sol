@@ -30,6 +30,7 @@ contract ZkEvoteHTLP is  Verifier {
     uint256 public V_X = 1;
     uint256 public k;
     uint256 public S;
+    uint256 public result;
 
 
 
@@ -95,9 +96,13 @@ contract ZkEvoteHTLP is  Verifier {
             ),
             "Invalid encrypted vote"
         );
-        accumulate(vData.u, vData.v_d1, vData.v_d2, vData.v_x);
+        //accumulate(vData.u, vData.v_d1, vData.v_d2, vData.v_x);
         votedDatas[msg.sender] = vData;
         console.log("msg.sender: ", msg.sender);
+    }
+
+    function accumulateByOne(castVoteData calldata vData) public {
+        accumulate(vData.u, vData.v_d1, vData.v_d2, vData.v_x);
     }
 
     function setTally(tallyData calldata tData) public {
@@ -214,7 +219,7 @@ contract ZkEvoteHTLP is  Verifier {
         payable(msg.sender).transfer(DEPOSIT/2);
     }
 
-    function retriveResult() public view returns (uint) {
+    function retriveResult() public {
         uint maxDiff = 0;
         uint maxIndex = 0;
         for(uint i = 0; i < tallyingResult_X.length; i++) {
@@ -226,7 +231,8 @@ contract ZkEvoteHTLP is  Verifier {
                 maxIndex = i;
             }
         }
-        return maxIndex;
+        result = maxIndex;
+
 
     }
 

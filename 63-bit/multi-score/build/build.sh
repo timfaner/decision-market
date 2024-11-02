@@ -212,7 +212,7 @@ To test, run the following command:
    ${GREEN}npm run test
 ${NC}"""
 
-rm -rf ../voter_data
+# rm -rf ../voter_data
 
 # 将变量写入文件
 cat > variables.txt << EOL
