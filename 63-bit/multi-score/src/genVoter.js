@@ -12,8 +12,8 @@ const t=40;
 const puzzle = new RandomPuzzle(n, t);
 
 const nCandidates = 4;
-const S = 10;
-const k = 10;
+const S = 16;
+const k = 15;
 
 
 
@@ -34,7 +34,7 @@ async function main() {
   fs.writeFileSync('voter_data/puzzle.json', puzzleStr);
 
 
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; i < 1; i++) {
     const voter = await getaVoter(n, nCandidates, S, k);
     console.log(voter.address);
 }

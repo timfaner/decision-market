@@ -1,0 +1,320 @@
+t: 14
+Puzzle initialization: 25.945ms
+LHTLPGen: 0.53ms
+solvePuzzle: 5.451ms
+
+t: 14
+Puzzle initialization: 23.65ms
+LHTLPGen: 0.443ms
+solvePuzzle: 6.561ms
+
+t: 14
+Puzzle initialization: 22.92ms
+LHTLPGen: 0.466ms
+solvePuzzle: 4.889ms
+
+t: 14
+Puzzle initialization: 22.564ms
+LHTLPGen: 0.464ms
+solvePuzzle: 3.914ms
+
+t: 15
+Puzzle initialization: 25.341ms
+LHTLPGen: 0.464ms
+solvePuzzle: 7.897ms
+
+t: 15
+Puzzle initialization: 23.799ms
+LHTLPGen: 0.428ms
+solvePuzzle: 8.376ms
+
+t: 15
+Puzzle initialization: 27.21ms
+LHTLPGen: 0.479ms
+solvePuzzle: 8.641ms
+
+t: 15
+Puzzle initialization: 23.986ms
+LHTLPGen: 0.445ms
+solvePuzzle: 7.846ms
+
+t: 16
+Puzzle initialization: 25.585ms
+LHTLPGen: 0.602ms
+solvePuzzle: 15.417ms
+
+t: 16
+Puzzle initialization: 25.898ms
+LHTLPGen: 0.441ms
+solvePuzzle: 14.904ms
+
+t: 16
+Puzzle initialization: 25.707ms
+LHTLPGen: 0.596ms
+solvePuzzle: 15.549ms
+
+t: 16
+Puzzle initialization: 25.776ms
+LHTLPGen: 0.442ms
+solvePuzzle: 15.116ms
+
+t: 17
+Puzzle initialization: 27.216ms
+LHTLPGen: 0.444ms
+solvePuzzle: 30.31ms
+
+t: 17
+Puzzle initialization: 25.358ms
+LHTLPGen: 0.45ms
+solvePuzzle: 29.793ms
+
+t: 17
+Puzzle initialization: 25.798ms
+LHTLPGen: 0.425ms
+solvePuzzle: 29.702ms
+
+t: 17
+Puzzle initialization: 25.354ms
+LHTLPGen: 0.438ms
+solvePuzzle: 29.476ms
+
+t: 18
+Puzzle initialization: 26.782ms
+LHTLPGen: 0.42ms
+solvePuzzle: 59.864ms
+
+t: 18
+Puzzle initialization: 27.285ms
+LHTLPGen: 0.426ms
+solvePuzzle: 60.05ms
+
+t: 18
+Puzzle initialization: 27.994ms
+LHTLPGen: 0.432ms
+solvePuzzle: 59.617ms
+
+t: 18
+Puzzle initialization: 26.829ms
+LHTLPGen: 0.431ms
+solvePuzzle: 60.558ms
+
+t: 19
+Puzzle initialization: 27.604ms
+LHTLPGen: 0.45ms
+solvePuzzle: 119.038ms
+
+t: 19
+Puzzle initialization: 28.088ms
+LHTLPGen: 0.434ms
+solvePuzzle: 118.618ms
+
+t: 19
+Puzzle initialization: 28.682ms
+LHTLPGen: 0.435ms
+solvePuzzle: 120.13ms
+
+t: 19
+Puzzle initialization: 29.166ms
+LHTLPGen: 0.426ms
+solvePuzzle: 118.895ms
+
+t: 20
+Puzzle initialization: 29.647ms
+LHTLPGen: 0.83ms
+solvePuzzle: 236.752ms
+
+t: 20
+Puzzle initialization: 29.595ms
+LHTLPGen: 0.42ms
+solvePuzzle: 236.306ms
+
+t: 20
+Puzzle initialization: 28.709ms
+LHTLPGen: 0.415ms
+solvePuzzle: 236.367ms
+
+t: 20
+Puzzle initialization: 29.088ms
+LHTLPGen: 0.435ms
+solvePuzzle: 236.198ms
+
+t: 21
+Puzzle initialization: 30.932ms
+LHTLPGen: 0.423ms
+solvePuzzle: 470.865ms
+
+t: 21
+Puzzle initialization: 30.804ms
+LHTLPGen: 0.427ms
+solvePuzzle: 478.681ms
+
+t: 21
+Puzzle initialization: 30.746ms
+LHTLPGen: 0.412ms
+solvePuzzle: 476.043ms
+
+t: 21
+Puzzle initialization: 29.892ms
+LHTLPGen: 0.424ms
+solvePuzzle: 472.482ms
+
+t: 22
+Puzzle initialization: 31.845ms
+LHTLPGen: 0.427ms
+solvePuzzle: 947.718ms
+
+t: 22
+Puzzle initialization: 33.133ms
+LHTLPGen: 0.501ms
+solvePuzzle: 953.552ms
+
+t: 22
+Puzzle initialization: 31.966ms
+LHTLPGen: 0.439ms
+solvePuzzle: 953.847ms
+
+t: 22
+Puzzle initialization: 32.286ms
+LHTLPGen: 0.422ms
+solvePuzzle: 951.081ms
+
+t: 23
+Puzzle initialization: 33.67ms
+LHTLPGen: 0.427ms
+solvePuzzle: 1.902s
+
+t: 23
+Puzzle initialization: 33.68ms
+LHTLPGen: 0.442ms
+solvePuzzle: 2.049s
+
+t: 23
+Puzzle initialization: 33.733ms
+LHTLPGen: 0.431ms
+solvePuzzle: 1.936s
+
+t: 23
+Puzzle initialization: 34.149ms
+LHTLPGen: 0.466ms
+solvePuzzle: 1.908s
+
+t: 24
+Puzzle initialization: 36.605ms
+LHTLPGen: 0.443ms
+solvePuzzle: 3.827s
+
+t: 24
+Puzzle initialization: 35.047ms
+LHTLPGen: 0.426ms
+solvePuzzle: 3.836s
+
+t: 24
+Puzzle initialization: 35.481ms
+LHTLPGen: 0.43ms
+solvePuzzle: 3.814s
+
+t: 24
+Puzzle initialization: 33.94ms
+LHTLPGen: 0.424ms
+solvePuzzle: 3.837s
+
+t: 25
+Puzzle initialization: 67.564ms
+LHTLPGen: 0.423ms
+solvePuzzle: 7.811s
+
+t: 25
+Puzzle initialization: 36.784ms
+LHTLPGen: 0.433ms
+solvePuzzle: 7.667s
+
+t: 25
+Puzzle initialization: 36.965ms
+LHTLPGen: 0.433ms
+solvePuzzle: 7.654s
+
+t: 25
+Puzzle initialization: 35.746ms
+LHTLPGen: 0.429ms
+solvePuzzle: 7.659s
+
+t: 26
+Puzzle initialization: 39.295ms
+LHTLPGen: 0.431ms
+solvePuzzle: 15.691s
+
+t: 26
+Puzzle initialization: 38.164ms
+LHTLPGen: 0.443ms
+solvePuzzle: 15.335s
+
+t: 26
+Puzzle initialization: 37.488ms
+LHTLPGen: 0.417ms
+solvePuzzle: 15.433s
+
+t: 26
+Puzzle initialization: 36.963ms
+LHTLPGen: 0.419ms
+solvePuzzle: 15.456s
+
+t: 27
+Puzzle initialization: 38.857ms
+LHTLPGen: 0.42ms
+solvePuzzle: 30.598s
+
+t: 27
+Puzzle initialization: 37.923ms
+LHTLPGen: 0.416ms
+solvePuzzle: 30.665s
+
+t: 27
+Puzzle initialization: 38.065ms
+LHTLPGen: 0.445ms
+solvePuzzle: 31.133s
+
+t: 27
+Puzzle initialization: 38.328ms
+LHTLPGen: 0.412ms
+solvePuzzle: 30.704s
+
+t: 28
+Puzzle initialization: 41.013ms
+LHTLPGen: 0.434ms
+solvePuzzle: 1:00.994 (m:ss.mmm)
+
+t: 28
+Puzzle initialization: 40.377ms
+LHTLPGen: 0.428ms
+solvePuzzle: 1:01.462 (m:ss.mmm)
+
+t: 28
+Puzzle initialization: 40.208ms
+LHTLPGen: 0.427ms
+solvePuzzle: 1:01.844 (m:ss.mmm)
+
+t: 28
+Puzzle initialization: 39.921ms
+LHTLPGen: 0.409ms
+solvePuzzle: 1:02.211 (m:ss.mmm)
+
+t: 29
+Puzzle initialization: 40.78ms
+LHTLPGen: 0.434ms
+solvePuzzle: 2:01.743 (m:ss.mmm)
+
+t: 29
+Puzzle initialization: 47.704ms
+LHTLPGen: 0.575ms
+solvePuzzle: 2:03.150 (m:ss.mmm)
+
+t: 29
+Puzzle initialization: 42.173ms
+LHTLPGen: 0.427ms
+solvePuzzle: 2:04.860 (m:ss.mmm)
+
+t: 29
+Puzzle initialization: 40.973ms
+LHTLPGen: 0.446ms
+solvePuzzle: 2:02.244 (m:ss.mmm)
+
